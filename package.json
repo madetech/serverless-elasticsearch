@@ -1,0 +1,12 @@
+{
+  "name": "dvla-es",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "test": "jest",
+    "deploy": "sls deploy -s staging --aws-profile=default"
+  },
+  "author": "",
+  "license": "ISC"
+}
