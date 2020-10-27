@@ -1,12 +1,16 @@
-const hello = require("./lib/hello");
+const { saveRecord } = require("./dependencies");
+const { nanoid } = require("nanoid");
 
-module.exports.hello = async (event) => {
-  const message = await hello();
+module.exports.data = async (event) => {
+  if (!event || !event.body) {
+    return { statusCode: 400 };
+  }
+  const record = { id: nanoid(6) };
 
-  console.log(`we're gonna boot up a db called ${process.env.DVLA_DB_NAME}`);
+  const result = await saveRecord(record);
 
   return {
     statusCode: 200,
-    body: JSON.stringify(message),
+    body: JSON.stringify(record),
   };
 };

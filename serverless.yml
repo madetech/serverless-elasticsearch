@@ -7,6 +7,12 @@ provider:
   region: eu-west-2
   environment:
     DVLA_DB_NAME: dvla_db-${self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      Resource:
+        Fn::GetAtt: [DvlaTable, Arn]
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
@@ -42,26 +48,17 @@ package:
     - ./**
 
 functions:
-  hello:
-    handler: handler.hello
-    package:
-      include:
-        - handler.js
-        - lib/**.js
-    events:
-      - http:
-          method: GET
-          path: /hello
   data:
-    handler: handler2.data
+    handler: handler.data
     package:
       include:
-        - handler2.js
+        - dependencies.js
+        - handler.js
         - node_modules/**
-        - lib/putRecord.js
+        - lib/**/*.js
     events:
       - http:
-          method: GET
+          method: post
           path: /data
     environment:
       REGION: ${self:provider.region}
