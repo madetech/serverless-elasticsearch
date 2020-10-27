@@ -7,7 +7,14 @@ module.exports.data = async (event) => {
   }
   const record = { id: nanoid(6) };
 
-  const result = await saveRecord(record);
+  try {
+    const result = await saveRecord(record);
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({error})
+    }
+  }
 
   return {
     statusCode: 200,
