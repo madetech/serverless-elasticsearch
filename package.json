@@ -5,8 +5,14 @@
   "main": "handler.js",
   "scripts": {
     "test": "jest",
-    "deploy": "sls deploy -s staging --aws-profile=default"
+    "deploy": "npm prune --production && sls deploy -s staging --aws-profile=default && npm i"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "aws-sdk": "^2.779.0"
+  },
+  "dependencies": {
+    "nanoid": "^3.1.16"
+  }
 }
