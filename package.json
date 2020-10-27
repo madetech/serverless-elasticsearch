@@ -5,7 +5,7 @@
   "main": "handler.js",
   "scripts": {
     "test": "jest",
-    "deploy": "npm prune --production && sls deploy -s staging --aws-profile=default && npm i"
+    "deploy": "npm prune --production && sls deploy -s staging && npm i"
   },
   "author": "",
   "license": "ISC",
