@@ -1,12 +1,12 @@
 const hello = require("./lib/hello");
 
 module.exports.hello = async (event) => {
-  const body = hello();
+  const message = await hello();
 
-  console.log("this is where i say hello");
+  console.log(`we're gonna boot up a db called ${process.env.DVLA_DB_NAME}`);
 
   return {
     statusCode: 200,
-    body,
+    body: JSON.stringify(message),
   };
 };

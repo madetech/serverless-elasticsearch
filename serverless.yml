@@ -5,6 +5,8 @@ provider:
   stage: ${opt:stage}
   runtime: nodejs12.x
   region: eu-west-2
+  environment:
+    DVLA_DB_NAME: dvla_db
 
 # you can add statements to the Lambda function's IAM Role here
 #  iamRoleStatements:
