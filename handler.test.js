@@ -11,4 +11,12 @@ describe("handler", () => {
 
     expect(result.statusCode).toBe(400);
   });
+
+  it("returns a 400 if event body does not contain an id", async () => {
+    const event = { body: { invalid: "object" } };
+
+    const result = await data(event);
+
+    expect(result.statusCode).toBe(400);
+  });
 });

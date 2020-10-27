@@ -2,7 +2,7 @@ const { saveRecord } = require("./dependencies");
 const { nanoid } = require("nanoid");
 
 module.exports.data = async (event) => {
-  if (!event || !event.body) {
+  if (!event || !event.body || !event.body.id) {
     return { statusCode: 400 };
   }
   const record = { id: nanoid(6) };
