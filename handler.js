@@ -1,5 +1,4 @@
 const { saveRecord } = require("./dependencies");
-const { nanoid } = require("nanoid");
 
 module.exports.data = async (event) => {
   if (!event || !event.body) {
@@ -7,7 +6,8 @@ module.exports.data = async (event) => {
   }
   const request = JSON.parse(event.body);
 
-  if (typeof request !== 'object') { // This check needs to change -- either 'name' or just any object
+  if (typeof request !== "object") {
+    // This check needs to change -- either 'name' or just any object
     return { statusCode: 400 };
   }
 
@@ -18,8 +18,8 @@ module.exports.data = async (event) => {
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({error})
-    }
+      body: JSON.stringify({ error }),
+    };
   }
 
   return {

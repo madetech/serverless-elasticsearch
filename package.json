@@ -1,5 +1,5 @@
 {
-  "name": "dvla-es",
+  "name": "sls-es",
   "version": "1.0.0",
   "description": "",
   "main": "handler.js",
@@ -13,6 +13,8 @@
     "aws-sdk": "^2.779.0"
   },
   "dependencies": {
+    "@acuris/aws-es-connection": "^2.0.1",
+    "@elastic/elasticsearch": "^7.9.1",
     "nanoid": "^3.1.16"
   }
 }
