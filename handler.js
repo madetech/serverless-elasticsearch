@@ -7,11 +7,9 @@ module.exports.data = async (event) => {
   }
   const request = JSON.parse(event.body);
 
-  if (!request.id) { // This check needs to change -- either 'name' or just any object
+  if (typeof request !== 'object') { // This check needs to change -- either 'name' or just any object
     return { statusCode: 400 };
   }
-
-  //const record = { id: nanoid(6) };
 
   let result;
 
@@ -26,6 +24,6 @@ module.exports.data = async (event) => {
 
   return {
     statusCode: 200,
-    body: JSON.stringify(result), //This should be result
+    body: JSON.stringify(result),
   };
 };
