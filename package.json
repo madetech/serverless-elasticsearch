@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "aws-sdk": "^2.779.0"
+    "aws-sdk": "^2.779.0",
+    "eslint": "^7.12.1"
   },
   "dependencies": {
     "@acuris/aws-es-connection": "^2.0.1",
