@@ -11,6 +11,7 @@ provider:
     - Effect: Allow
       Action:
         - dynamodb:PutItem
+        - dynamodb:BatchWriteItem
       Resource: !GetAtt SlsEsTable.Arn
     - Effect: Allow
       Action:
@@ -40,6 +41,8 @@ functions:
       - stream:
           type: dynamodb
           arn: !GetAtt SlsEsTable.StreamArn
+          batchWindow: 20
+          batchSize: 20
     environment:
       ES_ENDPOINT:
         Fn::Join:

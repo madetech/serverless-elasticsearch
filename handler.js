@@ -1,4 +1,4 @@
-const { saveRecord } = require("./dependencies");
+const { saveRecord, saveMultipleRecords } = require("./dependencies");
 
 module.exports.data = async (event) => {
   if (!event || !event.body) {
@@ -7,18 +7,21 @@ module.exports.data = async (event) => {
   const request = JSON.parse(event.body);
 
   if (typeof request !== "object") {
-    // This check needs to change -- either 'name' or just any object
     return { statusCode: 400 };
   }
 
   let result;
 
   try {
-    result = await saveRecord(request);
-  } catch (error) {
+    if (Array.isArray(request)) {
+      result = await saveMultipleRecords(request);
+    } else {
+      result = await saveRecord(request);
+    }
+  } catch (err) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error }),
+      body: JSON.stringify({ err }),
     };
   }
 
