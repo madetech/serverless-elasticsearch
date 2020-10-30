@@ -15,8 +15,9 @@ module.exports.run = async (event) => {
 
   for (const [i, record] of event.Records.entries()) {
     const recordObj = Converter.unmarshall(record.dynamodb.NewImage);
-    if (recordObj.explode === true) throw "This is an error.";
     try {
+      if (recordObj.explode === true) throw "This is an error.";
+      recordObj['@timestamp'] = new Date()
       const result = await client.create({
         id: recordObj.id,
         index: "bar",

@@ -12,6 +12,7 @@ provider:
       Action:
         - dynamodb:PutItem
         - dynamodb:BatchWriteItem
+        - dynamodb:Scan
       Resource: !GetAtt SlsEsTable.Arn
     - Effect: Allow
       Action:
@@ -43,6 +44,12 @@ functions:
           arn: !GetAtt SlsEsTable.StreamArn
           batchWindow: 20
           batchSize: 20
+    environment:
+      ES_ENDPOINT:
+        Fn::Join:
+          ["", ["https://", !GetAtt ElasticSearchInstance.DomainEndpoint]]
+  reindex:
+    handler: reindex.run
     environment:
       ES_ENDPOINT:
         Fn::Join:
