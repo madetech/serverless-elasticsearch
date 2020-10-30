@@ -4,13 +4,14 @@ A project to simulate the fix for lost records when a lambda throws an exception
 
 ## Quick Start
 
-### Install Packages:
+### Install Packages
 
 ```sh
 npm i
 ```
 
-### To run tests:
+### To run tests
+
 (This requires the global Jest CLI: `npm i -g jest`)
 
 ```sh
@@ -24,7 +25,8 @@ jest --watch
 ```
 
 ### To deploy serverless stack
-You'll need to [set up your AWS creds](https://www.serverless.com/framework/docs/providers/aws/guide/credentials/) and install the serverless CLI globally first (`npm i -g serverless` as `sls` is used in the npm script)
+
+You'll need to [set up your AWS credentials](https://www.serverless.com/framework/docs/providers/aws/guide/credentials/) and install the serverless CLI globally first (`npm i -g serverless` as `sls` is used in the npm script)
 
 ```sh
 npm run deploy
@@ -33,11 +35,13 @@ npm run deploy
 ### To invoke a lambda
 
 Locally:
+
 ```sh
 sls invoke local --function data -s staging -d '{ "body": "{\"name\":\"Baby Driver\"}"}'
 ```
 
 or in AWS via:
+
 ```sh
 sls invoke --function data -s staging -d '{ "body": "{\"name\":\"Baby Driver\"}"}'
 ```
