@@ -16,6 +16,18 @@ provider:
       Resource: !GetAtt SlsEsTable.Arn
     - Effect: Allow
       Action:
+        - lambda:ListEventSourceMappings
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - lambda:DeleteEventSourceMapping
+        - lambda:CreateEventSourceMapping
+      Resource: "*"
+      Condition:
+        ArnEquals:
+         lambda:FunctionArn: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${self:provider.stage}-stream"
+    - Effect: Allow
+      Action:
         - es:ESHttpPost
         - es:ESHttpPut
         - es:ESHttpDelete
@@ -56,6 +68,9 @@ functions:
           ["", ["https://", !GetAtt ElasticSearchInstance.DomainEndpoint]]
   reindex-stream:
     handler: reindex-stream.run
+    environment:
+      STREAM_ARN:
+        Fn::GetAtt: ["SlsEsTable", "StreamArn"]
 
 # you can add CloudFormation resource templates here
 resources:

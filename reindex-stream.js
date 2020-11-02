@@ -13,8 +13,17 @@ module.exports.run = async () => {
   for (const mapping of events.EventSourceMappings) {
     console.log(mapping.UUID);
 
-    const result = await client.deleteEventSourceMapping({ UUID: mapping.UUID }).promise();
+    const deleteResult = await client.deleteEventSourceMapping({ UUID: mapping.UUID }).promise();
 
-    console.log(result);
+    console.log(deleteResult);
   }
+
+  const createResult = await client.createEventSourceMapping({
+    BatchSize: 25,
+    EventSourceArn: process.env.STREAM_ARN,
+    FunctionName: "sls-es-staging-stream",
+    StartingPosition: "TRIM_HORIZON"
+  }).promise();
+
+  console.log(createResult);
 }

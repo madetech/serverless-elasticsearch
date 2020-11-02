@@ -18,10 +18,10 @@ module.exports.run = async (event) => {
     try {
       if (recordObj.explode === true) throw "This is an error.";
       recordObj['@timestamp'] = new Date()
-      const result = await client.create({
+      const result = await client.update({
         id: recordObj.id,
         index: "bar",
-        body: recordObj,
+        body: { doc: recordObj },
       });
       console.log(
         `Indexed ${i + 1} of ${event.Records.length} records: ${JSON.stringify(
