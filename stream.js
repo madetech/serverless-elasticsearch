@@ -15,21 +15,25 @@ module.exports.run = async (event) => {
 
   for (const [i, record] of event.Records.entries()) {
     const recordObj = Converter.unmarshall(record.dynamodb.NewImage);
-    try {
-      if (recordObj.explode === true) throw "This is an error.";
-      recordObj['@timestamp'] = new Date()
-      const result = await client.update({
-        id: recordObj.id,
-        index: "bar",
-        body: { doc: recordObj },
-      });
-      console.log(
-        `Indexed ${i + 1} of ${event.Records.length} records: ${JSON.stringify(
-          result.meta.request.params.body
-        )}`
-      );
-    } catch (error) {
-      console.error(JSON.stringify({ error }));
-    }
+    // try {
+    if (recordObj.explode === true) throw "This is an error.";
+    recordObj["@timestamp"] = new Date();
+    console.log(`RecordObject from stream.js : ${JSON.stringify(recordObj)}`);
+    const result = await client.update({
+      id: recordObj.id,
+      index: "bar",
+      body: {
+        doc: recordObj,
+        doc_as_upsert: true,
+      },
+    });
+    console.log(
+      `Indexed ${i + 1} of ${event.Records.length} records: ${JSON.stringify(
+        result.meta.request.params.body
+      )}`
+    );
+    // } catch (error) {
+    //   console.error(JSON.stringify({ error }));
+    // }
   }
 };

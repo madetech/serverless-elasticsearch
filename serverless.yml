@@ -25,7 +25,7 @@ provider:
       Resource: "*"
       Condition:
         ArnEquals:
-         lambda:FunctionArn: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${self:provider.stage}-stream"
+          lambda:FunctionArn: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${self:provider.stage}-stream"
     - Effect: Allow
       Action:
         - es:ESHttpPost
@@ -56,6 +56,8 @@ functions:
           arn: !GetAtt SlsEsTable.StreamArn
           batchWindow: 20
           batchSize: 20
+          bisectBatchOnFunctionError: true
+          maximumRetryAttempts: 1
     environment:
       ES_ENDPOINT:
         Fn::Join:
@@ -75,7 +77,7 @@ functions:
 # you can add CloudFormation resource templates here
 resources:
   Resources:
-    SlsEsTable:
+    SlsEsTable: # The primary (only) Dynamo table
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:provider.environment.DB_NAME}
