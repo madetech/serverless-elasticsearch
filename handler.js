@@ -18,10 +18,10 @@ module.exports.data = async (event) => {
     } else {
       result = await saveRecord(request);
     }
-  } catch (err) {
+  } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ err }),
+      body: JSON.stringify({ error }),
     };
   }
 
