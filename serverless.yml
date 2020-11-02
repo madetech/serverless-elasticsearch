@@ -48,12 +48,14 @@ functions:
       ES_ENDPOINT:
         Fn::Join:
           ["", ["https://", !GetAtt ElasticSearchInstance.DomainEndpoint]]
-  reindex:
-    handler: reindex.run
+  reindex-scan:
+    handler: reindex-scan.run
     environment:
       ES_ENDPOINT:
         Fn::Join:
           ["", ["https://", !GetAtt ElasticSearchInstance.DomainEndpoint]]
+  reindex-stream:
+    handler: reindex-stream.run
 
 # you can add CloudFormation resource templates here
 resources:
