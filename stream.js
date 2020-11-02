@@ -28,8 +28,8 @@ module.exports.run = async (event) => {
           result.meta.request.params.body
         )}`
       );
-    } catch (err) {
-      console.error(JSON.stringify({ err }));
+    } catch (error) {
+      console.error(JSON.stringify({ error }));
     }
   }
 };

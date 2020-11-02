@@ -19,7 +19,7 @@ module.exports.run = async (event) => {
     TableName: process.env.DB_NAME
   }).promise()
 
-  for (const item of result.Items) {
+  for (const [i, item] of result.Items.entries()) {
     const recordObj = DynamoDB.Converter.unmarshall(item)
 
     try {
@@ -34,8 +34,8 @@ module.exports.run = async (event) => {
           result.meta.request.params.body
         )}`
       );
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
     }
   }
 }
