@@ -1,4 +1,4 @@
-service: sls-es
+service: sls-es-2
 
 provider:
   name: aws
@@ -6,7 +6,7 @@ provider:
   runtime: nodejs12.x
   region: eu-west-2
   environment:
-    DB_NAME: sls-es-db-${self:provider.stage}
+    DB_NAME: ${self:service}-db-${self:provider.stage}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -58,6 +58,11 @@ functions:
           batchSize: 20
           bisectBatchOnFunctionError: true
           maximumRetryAttempts: 1
+    vpc:
+      securityGroupIds:
+        - Ref: VpcSecurityGroup
+      subnetIds:
+        - Ref: PrivateSubnet1
     environment:
       ES_ENDPOINT:
         Fn::Join:
@@ -77,7 +82,34 @@ functions:
 # you can add CloudFormation resource templates here
 resources:
   Resources:
-    SlsEsTable: # The primary (only) Dynamo table
+    Vpc:
+      Type: AWS::EC2::VPC
+      Properties:
+        CidrBlock: 10.0.0.0/16
+    PrivateSubnet1:
+      Type: AWS::EC2::Subnet
+      Properties:
+        CidrBlock: 10.0.1.0/24
+        VpcId:
+          Ref: Vpc
+    VpcSecurityGroup:
+      Type: "AWS::EC2::SecurityGroup"
+      Properties:
+        GroupName: VPC SG ${self:service}
+        GroupDescription: VPC Security Group
+        VpcId: !Ref Vpc
+    ESSecurityGroup:
+      Type: "AWS::EC2::SecurityGroup"
+      Properties:
+        GroupName: ES SG ${self:service}
+        GroupDescription: ES Security group
+        VpcId: !Ref Vpc
+        SecurityGroupIngress:
+          - IpProtocol: -1
+            FromPort: 0
+            ToPort: 65535
+            SourceSecurityGroupId: !Ref VpcSecurityGroup
+    SlsEsTable:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:provider.environment.DB_NAME}
@@ -103,25 +135,8 @@ resources:
           DedicatedMasterEnabled: false
           ZoneAwarenessEnabled: false
         ElasticsearchVersion: 7.4
-        AccessPolicies:
-          Version: "2012-10-17"
-          Statement:
-            Action:
-              - es:ESHttpGet
-              - es:ESHttpPut
-              - es:ESHttpPost
-              - es:ESHttpHead
-            Principal:
-              AWS:
-                [
-                  Fn::Join:
-                    [
-                      ":",
-                      [
-                        "arn:aws:iam:",
-                        { Ref: "AWS::AccountId" },
-                        "role/${self:service}-${self:provider.stage}-eu-west-2-lambdaRole",
-                      ],
-                    ],
-                ]
-            Effect: Allow
+        VPCOptions:
+          SecurityGroupIds:
+            - !Ref ESSecurityGroup
+          SubnetIds:
+            - Ref: PrivateSubnet1
