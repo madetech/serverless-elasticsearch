@@ -1,4 +1,4 @@
-const { saveRecord, saveMultipleRecords } = require("./dependencies");
+const { saveRecord, saveMultipleRecords } = require("../lib/dependencies");
 
 module.exports.data = async (event) => {
   if (!event || !event.body) {

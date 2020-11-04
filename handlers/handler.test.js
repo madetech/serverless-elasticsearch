@@ -1,5 +1,5 @@
-jest.mock("./dependencies");
-const { saveRecord, saveMultipleRecords } = require("./dependencies");
+jest.mock("../lib/dependencies");
+const { saveRecord, saveMultipleRecords } = require("../lib/dependencies");
 
 const { data } = require("./handler");
 

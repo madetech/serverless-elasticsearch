@@ -1,4 +1,4 @@
-handler: stream.run
+handler: handlers/stream.run
 events:
   - stream:
       type: dynamodb
