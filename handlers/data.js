@@ -1,6 +1,6 @@
 const { saveRecord, saveMultipleRecords } = require("../lib/dependencies");
 
-module.exports.data = async (event) => {
+module.exports.run = async (event) => {
   if (!event || !event.body) {
     return { statusCode: 400 };
   }

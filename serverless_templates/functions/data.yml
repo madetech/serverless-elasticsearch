@@ -1,4 +1,4 @@
-handler: handlers/handler.data
+handler: handlers/data.run
 events:
   - http:
       method: post

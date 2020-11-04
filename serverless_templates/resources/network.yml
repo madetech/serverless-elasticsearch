@@ -2,12 +2,23 @@ Vpc:
   Type: AWS::EC2::VPC
   Properties:
     CidrBlock: 10.0.0.0/16
+    Tags:
+      - Key: Name
+        Value: ${self:service} VPC
 PrivateSubnet1:
   Type: AWS::EC2::Subnet
   Properties:
     CidrBlock: 10.0.1.0/24
     VpcId:
       Ref: Vpc
+VpcEndpoint:
+  Type: AWS::EC2::VPCEndpoint
+  Properties:
+    ServiceName: com.amazonaws.${self:provider.region}.dynamodb
+    SubnetIds:
+      - !Ref PrivateSubnet1
+    VpcEndpointType: Gateway
+    VpcId: !Ref Vpc
 VpcSecurityGroup:
   Type: "AWS::EC2::SecurityGroup"
   Properties:

@@ -1,4 +1,4 @@
-handler: handlers/reindex-stream.run
+handler: handlers/add-trigger.run
 environment:
   STREAM_ARN:
     Fn::GetAtt: ["SlsEsTable", "StreamArn"]

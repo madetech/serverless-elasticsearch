@@ -1,9 +1,9 @@
 jest.mock("../lib/dependencies");
 const { saveRecord, saveMultipleRecords } = require("../lib/dependencies");
 
-const { data } = require("./handler");
+const { data } = require("./data");
 
-describe("handler", () => {
+describe("data", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -52,6 +52,4 @@ describe("handler", () => {
     expect(saveMultipleRecords).toHaveBeenCalledTimes(1);
     expect(saveRecord).not.toHaveBeenCalled();
   });
-
-  // Batch insert with new endpoint
 });

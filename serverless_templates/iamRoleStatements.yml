@@ -16,7 +16,7 @@ iamRoleStatements:
     Resource: "*"
     Condition:
       ArnEquals:
-        lambda:FunctionArn: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${self:provider.stage}-stream"
+        lambda:FunctionArn: ${self:provider.environment.STREAM_HANDLER_ARN}
   - Effect: Allow
     Action:
       - es:ESHttpPost

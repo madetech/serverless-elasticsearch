@@ -3,8 +3,7 @@ events:
   - stream:
       type: dynamodb
       arn: !GetAtt SlsEsTable.StreamArn
-      batchWindow: 20
-      batchSize: 20
+      batchSize: 25
       bisectBatchOnFunctionError: true
       maximumRetryAttempts: 1
 vpc:
@@ -12,6 +11,3 @@ vpc:
     - Ref: VpcSecurityGroup
   subnetIds:
     - Ref: PrivateSubnet1
-environment:
-  ES_ENDPOINT:
-    Fn::Join: ["", ["https://", !GetAtt ElasticSearchInstance.DomainEndpoint]]

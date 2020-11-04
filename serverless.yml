@@ -7,6 +7,10 @@ provider:
   region: eu-west-2
   environment:
     DB_NAME: ${self:service}-db-${self:provider.stage}
+    ES_ENDPOINT:
+      !Join ["", ["https://", !GetAtt ElasticSearchInstance.DomainEndpoint]]
+    ES_INDEX_NAME: bar
+    STREAM_HANDLER_ARN: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${self:provider.stage}-stream"
   iamRoleStatements: ${file(${self:custom.templateDirectory}/iamRoleStatements.yml):iamRoleStatements}
 
 custom:
@@ -18,8 +22,9 @@ package:
 functions:
   data: ${file(${self:custom.templateDirectory}/functions/data.yml)}
   stream: ${file(${self:custom.templateDirectory}/functions/stream.yml)}
-  reindex-scan: ${file(${self:custom.templateDirectory}/functions/reindex-scan.yml)}
-  reindex-stream: ${file(${self:custom.templateDirectory}/functions/reindex-stream.yml)}
+  remove-trigger: ${file(${self:custom.templateDirectory}/functions/remove-trigger.yml)}
+  reindex: ${file(${self:custom.templateDirectory}/functions/reindex.yml)}
+  add-trigger: ${file(${self:custom.templateDirectory}/functions/add-trigger.yml)}
 
 resources:
   Resources:

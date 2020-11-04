@@ -15,13 +15,12 @@ module.exports.run = async (event) => {
 
   for (const [i, record] of event.Records.entries()) {
     const recordObj = Converter.unmarshall(record.dynamodb.NewImage);
-    // try {
     if (recordObj.explode === true) throw "This is an error.";
     recordObj["@timestamp"] = new Date();
     console.log(`RecordObject from stream.js : ${JSON.stringify(recordObj)}`);
     const result = await client.update({
       id: recordObj.id,
-      index: "bar",
+      index: process.env.ES_INDEX_NAME,
       body: {
         doc: recordObj,
         doc_as_upsert: true,
@@ -32,8 +31,5 @@ module.exports.run = async (event) => {
         result.meta.request.params.body
       )}`
     );
-    // } catch (error) {
-    //   console.error(JSON.stringify({ error }));
-    // }
   }
 };

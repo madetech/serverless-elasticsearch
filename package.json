@@ -2,7 +2,7 @@
   "name": "sls-es-2",
   "version": "1.0.0",
   "description": "",
-  "main": "handlers/handler.js",
+  "main": "handlers/data.js",
   "scripts": {
     "test": "jest",
     "deploy": "npm prune --production && sls deploy -s staging && npm i"

@@ -1,0 +1,7 @@
+handler: handlers/reindex.run
+timeout: 30
+vpc:
+  securityGroupIds:
+    - Ref: VpcSecurityGroup
+  subnetIds:
+    - Ref: PrivateSubnet1
