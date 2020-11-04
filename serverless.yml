@@ -7,136 +7,25 @@ provider:
   region: eu-west-2
   environment:
     DB_NAME: ${self:service}-db-${self:provider.stage}
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:PutItem
-        - dynamodb:BatchWriteItem
-        - dynamodb:Scan
-      Resource: !GetAtt SlsEsTable.Arn
-    - Effect: Allow
-      Action:
-        - lambda:ListEventSourceMappings
-      Resource: "*"
-    - Effect: Allow
-      Action:
-        - lambda:DeleteEventSourceMapping
-        - lambda:CreateEventSourceMapping
-      Resource: "*"
-      Condition:
-        ArnEquals:
-          lambda:FunctionArn: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${self:provider.stage}-stream"
-    - Effect: Allow
-      Action:
-        - es:ESHttpPost
-        - es:ESHttpPut
-        - es:ESHttpDelete
-        - es:ESHttpGet
-      Resource:
-        - !GetAtt ElasticSearchInstance.DomainArn
-        - { Fn::Join: ["", [!GetAtt ElasticSearchInstance.DomainArn, "/*"]] }
+  iamRoleStatements: ${file(${self:custom.templateDirectory}/iamRoleStatements.yml):iamRoleStatements}
+
+custom:
+  templateDirectory: ./serverless_templates
 
 package:
   individually: true
 
 functions:
-  data:
-    handler: handler.data
-    events:
-      - http:
-          method: post
-          path: /data
-    environment:
-      REGION: ${self:provider.region}
-  stream:
-    handler: stream.run
-    events:
-      - stream:
-          type: dynamodb
-          arn: !GetAtt SlsEsTable.StreamArn
-          batchWindow: 20
-          batchSize: 20
-          bisectBatchOnFunctionError: true
-          maximumRetryAttempts: 1
-    vpc:
-      securityGroupIds:
-        - Ref: VpcSecurityGroup
-      subnetIds:
-        - Ref: PrivateSubnet1
-    environment:
-      ES_ENDPOINT:
-        Fn::Join:
-          ["", ["https://", !GetAtt ElasticSearchInstance.DomainEndpoint]]
-  reindex-scan:
-    handler: reindex-scan.run
-    environment:
-      ES_ENDPOINT:
-        Fn::Join:
-          ["", ["https://", !GetAtt ElasticSearchInstance.DomainEndpoint]]
-  reindex-stream:
-    handler: reindex-stream.run
-    environment:
-      STREAM_ARN:
-        Fn::GetAtt: ["SlsEsTable", "StreamArn"]
+  data: ${file(${self:custom.templateDirectory}/functions/data.yml)}
+  stream: ${file(${self:custom.templateDirectory}/functions/stream.yml)}
+  reindex-scan: ${file(${self:custom.templateDirectory}/functions/reindex-scan.yml)}
+  reindex-stream: ${file(${self:custom.templateDirectory}/functions/reindex-stream.yml)}
 
-# you can add CloudFormation resource templates here
 resources:
   Resources:
-    Vpc:
-      Type: AWS::EC2::VPC
-      Properties:
-        CidrBlock: 10.0.0.0/16
-    PrivateSubnet1:
-      Type: AWS::EC2::Subnet
-      Properties:
-        CidrBlock: 10.0.1.0/24
-        VpcId:
-          Ref: Vpc
-    VpcSecurityGroup:
-      Type: "AWS::EC2::SecurityGroup"
-      Properties:
-        GroupName: VPC SG ${self:service}
-        GroupDescription: VPC Security Group
-        VpcId: !Ref Vpc
-    ESSecurityGroup:
-      Type: "AWS::EC2::SecurityGroup"
-      Properties:
-        GroupName: ES SG ${self:service}
-        GroupDescription: ES Security group
-        VpcId: !Ref Vpc
-        SecurityGroupIngress:
-          - IpProtocol: -1
-            FromPort: 0
-            ToPort: 65535
-            SourceSecurityGroupId: !Ref VpcSecurityGroup
-    SlsEsTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:provider.environment.DB_NAME}
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        StreamSpecification:
-          StreamViewType: NEW_IMAGE
-        BillingMode: PAY_PER_REQUEST
-    ElasticSearchInstance:
-      Type: AWS::Elasticsearch::Domain
-      Properties:
-        EBSOptions:
-          EBSEnabled: true
-          VolumeType: gp2
-          VolumeSize: 10
-        ElasticsearchClusterConfig:
-          InstanceType: t2.small.elasticsearch
-          InstanceCount: 1
-          DedicatedMasterEnabled: false
-          ZoneAwarenessEnabled: false
-        ElasticsearchVersion: 7.4
-        VPCOptions:
-          SecurityGroupIds:
-            - !Ref ESSecurityGroup
-          SubnetIds:
-            - Ref: PrivateSubnet1
+    Vpc: ${file(${self:custom.templateDirectory}/resources/network.yml):Vpc}
+    PrivateSubnet1: ${file(${self:custom.templateDirectory}/resources/network.yml):PrivateSubnet1}
+    VpcSecurityGroup: ${file(${self:custom.templateDirectory}/resources/network.yml):VpcSecurityGroup}
+    ESSecurityGroup: ${file(${self:custom.templateDirectory}/resources/network.yml):ESSecurityGroup}
+    SlsEsTable: ${file(${self:custom.templateDirectory}/resources/dynamo.yml):SlsEsTable}
+    ElasticSearchInstance: ${file(${self:custom.templateDirectory}/resources/elasticsearch.yml):ElasticSearchInstance}

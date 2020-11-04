@@ -1,0 +1,13 @@
+SlsEsTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: ${self:provider.environment.DB_NAME}
+    KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+    AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+    StreamSpecification:
+      StreamViewType: NEW_IMAGE
+    BillingMode: PAY_PER_REQUEST

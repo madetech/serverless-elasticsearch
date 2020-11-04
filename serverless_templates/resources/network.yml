@@ -1,0 +1,27 @@
+Vpc:
+  Type: AWS::EC2::VPC
+  Properties:
+    CidrBlock: 10.0.0.0/16
+PrivateSubnet1:
+  Type: AWS::EC2::Subnet
+  Properties:
+    CidrBlock: 10.0.1.0/24
+    VpcId:
+      Ref: Vpc
+VpcSecurityGroup:
+  Type: "AWS::EC2::SecurityGroup"
+  Properties:
+    GroupName: VPC SG ${self:service}
+    GroupDescription: VPC Security Group
+    VpcId: !Ref Vpc
+ESSecurityGroup:
+  Type: "AWS::EC2::SecurityGroup"
+  Properties:
+    GroupName: ES SG ${self:service}
+    GroupDescription: ES Security group
+    VpcId: !Ref Vpc
+    SecurityGroupIngress:
+      - IpProtocol: -1
+        FromPort: 0
+        ToPort: 65535
+        SourceSecurityGroupId: !Ref VpcSecurityGroup

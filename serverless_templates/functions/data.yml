@@ -1,0 +1,7 @@
+handler: handler.data
+events:
+  - http:
+      method: post
+      path: /data
+environment:
+  REGION: ${self:provider.region}

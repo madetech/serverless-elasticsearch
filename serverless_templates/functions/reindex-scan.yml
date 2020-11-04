@@ -1,0 +1,4 @@
+handler: reindex-scan.run
+environment:
+  ES_ENDPOINT:
+    Fn::Join: ["", ["https://", !GetAtt ElasticSearchInstance.DomainEndpoint]]

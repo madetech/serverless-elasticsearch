@@ -1,0 +1,28 @@
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:PutItem
+      - dynamodb:BatchWriteItem
+      - dynamodb:Scan
+    Resource: !GetAtt SlsEsTable.Arn
+  - Effect: Allow
+    Action:
+      - lambda:ListEventSourceMappings
+    Resource: "*"
+  - Effect: Allow
+    Action:
+      - lambda:DeleteEventSourceMapping
+      - lambda:CreateEventSourceMapping
+    Resource: "*"
+    Condition:
+      ArnEquals:
+        lambda:FunctionArn: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${self:provider.stage}-stream"
+  - Effect: Allow
+    Action:
+      - es:ESHttpPost
+      - es:ESHttpPut
+      - es:ESHttpDelete
+      - es:ESHttpGet
+    Resource:
+      - !GetAtt ElasticSearchInstance.DomainArn
+      - { Fn::Join: ["", [!GetAtt ElasticSearchInstance.DomainArn, "/*"]] }

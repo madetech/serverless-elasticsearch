@@ -1,0 +1,4 @@
+handler: reindex-stream.run
+environment:
+  STREAM_ARN:
+    Fn::GetAtt: ["SlsEsTable", "StreamArn"]
