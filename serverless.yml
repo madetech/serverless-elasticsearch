@@ -9,7 +9,7 @@ provider:
     DB_NAME: ${self:service}-db-${self:provider.stage}
     ES_ENDPOINT:
       !Join ["", ["https://", !GetAtt ElasticSearchInstance.DomainEndpoint]]
-    ES_INDEX_NAME: bar
+    ES_INDEX_NAME: bar2
     STREAM_HANDLER_ARN: !Sub "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${self:provider.stage}-stream"
   iamRoleStatements: ${file(${self:custom.templateDirectory}/iamRoleStatements.yml):iamRoleStatements}
 
@@ -31,6 +31,7 @@ resources:
     Vpc: ${file(${self:custom.templateDirectory}/resources/network.yml):Vpc}
     PrivateSubnet1: ${file(${self:custom.templateDirectory}/resources/network.yml):PrivateSubnet1}
     VpcSecurityGroup: ${file(${self:custom.templateDirectory}/resources/network.yml):VpcSecurityGroup}
+    VpcEndpoint: ${file(${self:custom.templateDirectory}/resources/network.yml):VpcEndpoint}
     ESSecurityGroup: ${file(${self:custom.templateDirectory}/resources/network.yml):ESSecurityGroup}
     SlsEsTable: ${file(${self:custom.templateDirectory}/resources/dynamo.yml):SlsEsTable}
     ElasticSearchInstance: ${file(${self:custom.templateDirectory}/resources/elasticsearch.yml):ElasticSearchInstance}

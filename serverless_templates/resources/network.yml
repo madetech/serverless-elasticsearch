@@ -11,14 +11,6 @@ PrivateSubnet1:
     CidrBlock: 10.0.1.0/24
     VpcId:
       Ref: Vpc
-VpcEndpoint:
-  Type: AWS::EC2::VPCEndpoint
-  Properties:
-    ServiceName: com.amazonaws.${self:provider.region}.dynamodb
-    SubnetIds:
-      - !Ref PrivateSubnet1
-    VpcEndpointType: Gateway
-    VpcId: !Ref Vpc
 VpcSecurityGroup:
   Type: "AWS::EC2::SecurityGroup"
   Properties:
@@ -36,3 +28,10 @@ ESSecurityGroup:
         FromPort: 0
         ToPort: 65535
         SourceSecurityGroupId: !Ref VpcSecurityGroup
+VpcEndpoint:
+  Type: AWS::EC2::VPCEndpoint
+  Properties:
+    ServiceName: com.amazonaws.${self:provider.region}.dynamodb
+    RouteTableIds:
+      - rtb-041f36ca0e5327486 # need to work out how to map to the routetable id at creation time
+    VpcId: !Ref Vpc
