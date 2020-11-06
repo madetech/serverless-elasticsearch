@@ -1,6 +1,6 @@
 # Serverless Elasticsearch
 
-A project to simulate the fix for lost records when a lambda throws an exception when streaming an event batch from DynamoDB to Elasticsearch.
+Re-index data from DynamoDB to Elasticsearch in case of indexing failure or bad data.
 
 ## Quick Start
 
@@ -45,3 +45,10 @@ or in AWS via:
 ```sh
 sls invoke --function data -s staging -d '{ "body": "{\"name\":\"Baby Driver\"}"}'
 ```
+
+### To pause db streaming and reindex to a new index
+
+- sls invoke -function remove-trigger -s staging
+- update ES_INDEX_NAME in serverless.yml and deploy (would be good to pass this in as arg in future)
+- sls invoke -function reindex -s staging
+- sls invoke -function add-trigger -s staging
