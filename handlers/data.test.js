@@ -1,7 +1,7 @@
 jest.mock("../lib/dependencies");
 const { saveRecord, saveMultipleRecords } = require("../lib/dependencies");
 
-const { data } = require("./data");
+const data = require("./data").run;
 
 describe("data", () => {
   beforeEach(() => {
